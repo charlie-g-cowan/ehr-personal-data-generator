@@ -1,13 +1,15 @@
 const querystring = require('querystring');
 
 class EHRCallOptions {
-    createEHRFromIntermediatePatient(patient) {
-        const options = {
+    async createEHRFromIntermediatePatient(patient) {
+        return {
             'method': 'post',
-            'url': 'https://cdr.code4health.org/rest/v1/ehr?subjectId=12345&subjectNamespace=uk.nhs.nhs_number',
+            'url': 'https://cdr.code4health.org/rest/v1/ehr',
             'headers': {},
             'params': { 'subjectId': patient.idList.fhirId, 'subjectNamespace': 'fhirId'},
             'body': { "queryable": "true", "modifiable": "true" }
         };
     }
 }
+
+exports.EHRCallOptions = EHRCallOptions;

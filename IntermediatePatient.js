@@ -21,4 +21,4 @@ class IntermediatePatient {
     }
 }
 
-exports.Patient = IntermediatePatient;
+exports.IntermediatePatient = IntermediatePatient;
