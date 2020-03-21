@@ -41,7 +41,7 @@ class IntermediatePatient {
         this.idList.ehrId = getObjectPropertyIfExists(ehrStatusJson, 'ehrId');
         if ('ehrStatus' in ehrStatusJson) {
             if (ehrStatusJson.ehrStatus.subjectNamespace === 'fhirId' && 'subjectId' in ehrStatusJson.ehrStatus) {
-                this.idList.fhirId = getObjectPropertyIfExists(ehrStatusJson, 'subjectId');
+                this.idList.fhirId = getObjectPropertyIfExists(ehrStatusJson.ehrStatus, 'subjectId');
             }
             if ('otherDetails' in ehrStatusJson.ehrStatus) {
                 ehrStatusJson.ehrStatus.otherDetails.items.forEach((item) => {

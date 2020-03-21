@@ -22,7 +22,7 @@ class EHRCallOptions {
             'url': '/rest/v1/ehr',
             'headers': {},
             'params': { 'subjectId': fhirId, 'subjectNamespace': 'fhirId' },
-            'body': { "queryable": "true", "modifiable": "true" }
+            'data': { "queryable": "true", "modifiable": "true" }
         };
     }
 
@@ -35,6 +35,28 @@ class EHRCallOptions {
             'method': 'get',
             'url': '/rest/v1/ehr',
             'params': { 'subjectId': fhirId, 'subjectNamespace': 'fhirId' },
+        };
+    }
+
+    static getQueryParamsForGettingDemographicsFromEHRId(ehrId) {
+        return {
+            'method': 'get',
+            'url': '/rest/v1/demographics/ehr/' + ehrId + '/party',
+        };
+    }
+
+    static getQueryParamsForCreatingDemographicsFromEHRId(ehrId) {
+        return {
+            'method': 'post',
+            'url': '/rest/v1/demographics/party',
+            'data': {
+                "partyAdditionalInfo": [
+                    {
+                        "key": "ehrId",
+                        "value": ehrId
+                    }
+                ]
+            }
         };
     }
 

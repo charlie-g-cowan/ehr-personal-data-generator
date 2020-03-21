@@ -18,7 +18,7 @@ class EHRCall {
         try {
             return await axios(processedOptions);
         } catch (error) {
-            console.error(error);
+           throw error;
         }
     }
 }
