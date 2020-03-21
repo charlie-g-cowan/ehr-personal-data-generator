@@ -1,19 +1,6 @@
-const axios = require('axios');
 const { IntermediatePatient } = require('./IntermediatePatient');
 const { EHRCallOptions } = require('./EHRCallOptions');
 const { EHRCall } = require('./EHRCall');
-
-// axios({
-//     method: 'get',
-//     url: 'http://localhost:5000/api/Patient',
-//     headers: {},
-// })
-//     .then(function (response) {
-//         console.log(response.data[0].entry[0].resource);
-//     })
-//     .catch(function (error) {
-//         console.log(error);
-//     });
 
 // axios({
 //     method: 'get',
@@ -43,6 +30,7 @@ async function test2() {
     // EHRCallOptions.setEHRbirthYearAndAdminGender(intermediatePatient1))));
 }
 
+// Get the id of the demographics party (seperate object defining personal data for a patient) from the ehr id
 async function getDemographicsPartyIdFromEHRId(ehrId) {
     try {
         const retrievalResult = await EHRCall.run(EHRCallOptions.getQueryParamsForGettingDemographicsFromEHRId(ehrId));
@@ -70,16 +58,14 @@ async function getDemographicsPartyIdFromEHRId(ehrId) {
 
 async function test3() {
     const intermediatePatient = await new IntermediatePatient();
-    const ehrJson = (await EHRCall.run(EHRCallOptions.getQueryParamsForGettingEHRFromEHRId('32a2d984-510b-40f8-8c4d-7e1556082455'))).data;
-    await intermediatePatient.readInFromEHRStatusJson(ehrJson);
+    await intermediatePatient.initializeFromEhrId('32a2d984-510b-40f8-8c4d-7e1556082455');
     console.log(await getDemographicsPartyIdFromEHRId(intermediatePatient.idList.ehrId));
 }
 
 async function test4() {
     const intermediatePatient = await new IntermediatePatient();
-    const ehrJson = (await EHRCall.run(EHRCallOptions.getQueryParamsForGettingEHRFromEHRId('32a2d984-510b-40f8-8c4d-7e1556082455'))).data;
-    await intermediatePatient.readInFromEHRStatusJson(ehrJson);
+    await intermediatePatient.initializeFromEhrId('32a2d984-510b-40f8-8c4d-7e1556082455');
     const demographicsPartyId = await getDemographicsPartyIdFromEHRId(intermediatePatient.idList.ehrId);
 }
 
-test2();
+test3();
