@@ -1,0 +1,3 @@
+// Fake data is shown, but use same exports for the real authorisation
+exports.cdrAuthorisation = 'Basic c2Rmc2RmZHNrbGpmO2xha3NkamZsaXU5MDI0bW5mMi0zMGs=';
+exports.cdrUrl='https://cdr.example.org';
