@@ -15,6 +15,10 @@ Generate an EHR from a FHIR, with the key patient details transferred over:
 ```
 console.log(await convertFHIRPatientToEHRPatient('be0b14f1-8ade-4061-aad8-ee4d7a784682'));
 ```
+or in command line:
+```
+node GOSH-FHIRworks2020-fhir-ehr-converter/console/convertFhirToEhr.js be0b14f1-8ade-4061-aad8-ee4d7a784682
+```
 If an EHR already existed that was associated with the FHIR ID, it rewrites over that EHR.
 
 Read in from an FHIR into an IntermediatePatient object:
