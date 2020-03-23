@@ -9,6 +9,8 @@
 ## Working features / API
 Much of API works on an object called the IntermediatePatient, which is a patient which contains information from either a FHIR or EHR or both, and can write to an EHR (and in future a FHIR database); 
 
+N.B. these key tests are demonstrated in test/tests.js
+
 Generate an EHR from a FHIR, with the key patient details transferred over:
 ```
 console.log(await convertFHIRPatientToEHRPatient('be0b14f1-8ade-4061-aad8-ee4d7a784682'));
