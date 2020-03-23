@@ -60,6 +60,36 @@ class EHRCallOptions {
         };
     }
 
+    static getQueryParamsForCreatingDemographicsFromData(data) {
+        return {
+            'method': 'post',
+            'url': '/rest/v1/demographics/party',
+            data
+        };
+    }
+
+    static getQueryParamsForUpdatingDemographicsFromData(data) {
+        return {
+            'method': 'put',
+            'url': '/rest/v1/demographics/party',
+            data
+        };
+    }
+
+    static getQueryParamsForGettingDemographicsFromDemographicsId(demographicsId) {
+        return {
+            'method': 'get',
+            'url': '/rest/v1/demographics/party/' + demographicsId
+        };
+    }
+
+    static getQueryParamsForDeletingDemographicsById(id) {
+        return {
+            'method': 'delete',
+            'url': '/rest/v1/demographics/party/' + id
+        };
+    }
+
     static async setEHRbirthYearAndAdminGender(patient) {
         const toWrite = {
             "@class": "ITEM_TREE",

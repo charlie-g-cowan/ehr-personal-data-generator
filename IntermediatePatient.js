@@ -48,6 +48,39 @@ async function getEHRIdFromFHIRId(fhirId) {
     }
 }
 
+// Get the id of the demographics party (separate object defining personal data for a patient) from the ehr id
+async function getDemographicsPartyIdFromEHRId(ehrId) {
+    try {
+        const retrievalResult = await EHRCall.run(EHRCallOptions.getQueryParamsForGettingDemographicsFromEHRId(ehrId));
+        if (retrievalResult.status === 200) {
+            return retrievalResult.data.party.id;
+        }
+    } catch (e) {
+        if (e.response.status === 404) {
+            const creationResult = await EHRCall.run(EHRCallOptions.getQueryParamsForCreatingDemographicsFromEHRId(ehrId));
+            if (creationResult.status === 201) {
+                try {
+                    const retrievalSecondAttemptResult = await EHRCall.run(EHRCallOptions.getQueryParamsForGettingDemographicsFromEHRId(ehrId));
+                    if (retrievalSecondAttemptResult.status === 200) {
+                        return retrievalSecondAttemptResult.data.party.id;
+                    } else {
+                        console.log("Can't retrieve demographics party even after creation");
+                        // throw e;
+                    }
+                } catch (e2) {
+                    console.log("Error when retrieving demographics party, likely no ehr id was passed")
+                }
+            } else {
+                console.log("Can't create demographics party")
+                // throw 'Error: ' + JSON.stringify(creationResult, null, 2);
+            }
+        } else {
+            console.log("No demographics party exists and unknown response code so can't create")
+            // throw e;
+        }
+    }
+}
+
 class IntermediatePatient {
     constructor() {
         this.data = {};
@@ -63,7 +96,6 @@ class IntermediatePatient {
 
     async readInFromFHIRJSONRecord(fhirJson) {
         this.idList.fhirId = getObjectPropertyIfExists(fhirJson, 'id');
-        this.idList.ehrId = (await getEHRIdFromFHIRId(this.idList.fhirId));
         this.data.administrativeGender = getObjectPropertyIfExists(fhirJson, 'gender');
         const birthDate = getObjectPropertyIfExists(fhirJson, 'birthDate');
         this.data.birthDate = {
@@ -75,7 +107,11 @@ class IntermediatePatient {
     }
 
     async initializeFromFhirId(fhirId) {
-        await this.readInFromFHIRJSONRecord(await getFHIRJSONRecordByFHIRId(fhirId));
+        try {
+            await this.readInFromFHIRJSONRecord(await getFHIRJSONRecordByFHIRId(fhirId));
+        } catch (e) {
+            throw e;
+        }
     }
 
     async initializeFromEhrId(ehrId) {
@@ -104,6 +140,68 @@ class IntermediatePatient {
             }
         }
     }
+
+    async readInFromEHRDemographicsPartyJson(party) {
+        this.data.administrativeGender = getObjectPropertyIfExists(party, 'gender');
+        const birthDate = getObjectPropertyIfExists(party, 'dateOfBirth');
+        this.data.birthDate = {
+            year: birthDate.substr(0, 4),
+            month: birthDate.substr(5, 2),
+            day: birthDate.substr(8, 2)
+        };
+        if (!('name' in this.data)) {
+            this.data.name = {};
+        }
+        this.data.name.firstName = getObjectPropertyIfExists(party, 'firstNames');
+        this.data.name.familyName = getObjectPropertyIfExists(party, 'lastNames');
+    }
+
+    async readInFromEHRDemographicsPartyId(demographicsId) {
+        const party = (await EHRCall.run(EHRCallOptions.getQueryParamsForGettingDemographicsFromDemographicsId(demographicsId))).data.party;
+        await this.readInFromEHRDemographicsPartyJson(party);
+    }
+
+    async writeToEHRAndDemographics() {
+        const ehrId = await getEHRIdFromFHIRId(this.idList.fhirId);
+        const data = {
+            "dateOfBirth": this.data.birthDate.year + "-" + this.data.birthDate.month + "-" + this.data.birthDate.day,
+            "firstNames": this.data.name.firstName,
+            "gender": fhirToEhrGender(this.data.administrativeGender).toUpperCase(),
+            "lastNames": this.data.name.familyName,
+            "id": parseInt(await getDemographicsPartyIdFromEHRId(ehrId)),
+            "partyAdditionalInfo": [
+                {
+                    "key": "ehrId",
+                    "value": ehrId
+                }
+            ]
+        };
+        try {
+            await EHRCall.run(EHRCallOptions.getQueryParamsForUpdatingDemographicsFromData(data));
+        } catch (e) {
+            if (e.response.status === 409) { // Updated too many times already
+                // DO SOMETHING
+                await EHRCall.run(EHRCallOptions.getQueryParamsForDeletingDemographicsById(await getDemographicsPartyIdFromEHRId(ehrId)));
+                const data = {
+                    "dateOfBirth": this.data.birthDate.year + "-" + this.data.birthDate.month + "-" + this.data.birthDate.day,
+                    "firstNames": this.data.name.firstName,
+                    "gender": fhirToEhrGender(this.data.administrativeGender).toUpperCase(),
+                    "lastNames": this.data.name.familyName,
+                    "partyAdditionalInfo": [
+                        {
+                            "key": "ehrId",
+                            "value": ehrId
+                        }
+                    ]
+                };
+                await EHRCall.run(EHRCallOptions.getQueryParamsForCreatingDemographicsFromData(data));
+            } else {
+                console.log("ERROR:", e.response.status);
+            }
+        }
+    }
 }
 
 exports.IntermediatePatient = IntermediatePatient;
+exports.getEHRIdFromFHIRId = getEHRIdFromFHIRId;
+exports.getDemographicsPartyIdFromEHRId = getDemographicsPartyIdFromEHRId;
