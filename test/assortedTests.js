@@ -1,9 +1,9 @@
-const { convertFHIRPatientToEHRPatient } = require("./convertFHIRPatientToEHRPatient");
-const { getDemographicsPartyIdFromEHRId } = require("./IntermediatePatient");
-const { getEHRIdFromFHIRId } = require("./IntermediatePatient");
-const { IntermediatePatient } = require('./IntermediatePatient');
-const { EHRCallOptions } = require('./EHRCallOptions');
-const { EHRCall } = require('./EHRCall');
+const { convertFHIRPatientToEHRPatient } = require("../src/convertFHIRPatientToEHRPatient");
+const { getDemographicsPartyIdFromEHRId } = require("../src/IntermediatePatient");
+const { getEHRIdFromFHIRId } = require("../src/IntermediatePatient");
+const { IntermediatePatient } = require('../src/IntermediatePatient');
+const { EHRCallOptions } = require('../src/EHRCallOptions');
+const { EHRCall } = require('../src/EHRCall');
 
 // axios({
 //     method: 'get',

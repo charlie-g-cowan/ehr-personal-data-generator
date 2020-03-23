@@ -1,4 +1,4 @@
-const { cdrAuthorisation, cdrUrl } = require('./authorisation');
+const { cdrAuthorisation, cdrUrl } = require('../authorisation');
 const axios = require('axios');
 
 function convertOptions(options) {

@@ -2,9 +2,9 @@
   "name": "gosh-fhirworks-2020-fhir-ehr-converter",
   "version": "0.0.1",
   "description": "",
-  "main": "tests.js",
+  "main": "test/tests.js",
   "scripts": {
-    "start": "node tests.js"
+    "start": "node test/tests.js"
   },
   "author": "",
   "dependencies": {

@@ -1,6 +1,6 @@
-const { getDemographicsPartyIdFromEHRId } = require("./IntermediatePatient");
-const { IntermediatePatient } = require("./IntermediatePatient");
-const { convertFHIRPatientToEHRPatient } = require("./convertFHIRPatientToEHRPatient");
+const { getDemographicsPartyIdFromEHRId } = require("../src/IntermediatePatient");
+const { IntermediatePatient } = require("../src/IntermediatePatient");
+const { convertFHIRPatientToEHRPatient } = require("../src/convertFHIRPatientToEHRPatient");
 
 // Have a go with other patient IDs!
 
@@ -14,7 +14,7 @@ async function testInitializeFromFhirId() {
     console.log(intermediatePatient);
 }
 
-async function testInitalizeFromEhrId() {
+async function testInitializeFromEhrId() {
     const ehrId = '32a2d984-510b-40f8-8c4d-7e1556082455';
     const intermediatePatient = await new IntermediatePatient();
     await intermediatePatient.initializeFromEhrId(ehrId);
@@ -27,6 +27,6 @@ async function runTests() {
     console.log();
     await testInitializeFromFhirId();
     console.log();
-    await testInitalizeFromEhrId();
+    await testInitializeFromEhrId();
 }
 runTests();
