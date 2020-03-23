@@ -2,6 +2,10 @@
 - A converter between the FHIR and EHR standards.
 - Requires connection to both a FHIR server and an EHR server
 
+## Background
+
+My main project for my Systems Engineering module involves working with the openEHR standard. This gave me the inspiration to build a converter for the FHIR hack. Turns out observations are tougher to convert than expected, so for now it only converts basic patient details. 
+
 ## Requirements
 - Must be running a FHIR server on https://localhost:5001. Please use greenfrogs' module for this: https://github.com/greenfrogs/FHIRworks_2020 (included as a submodule in this project), following the guide specified there. Please  remember to copy in the secrets to appsettings.
 - Must create a an authorisation.js file in the format shown in authorisation.js.example, complete with access details for an openEHR CDR. N.B. for testing/marking by UCL, please contact me to obtain authorisation details for the CDR, as it is the same CDR as my main project, so I cannot publicly release the details.
